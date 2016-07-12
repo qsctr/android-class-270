@@ -6,6 +6,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -13,6 +14,8 @@ public class MainActivity extends AppCompatActivity {
     TextView textView;
     Button button;
     EditText editText;
+    RadioGroup radioGroup;
+    String selectedRadio = "yes";
     boolean submitted;
 
     @Override
@@ -24,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         button = (Button)findViewById(R.id.button);
         editText = (EditText)findViewById(R.id.editText);
         textView.setText(R.string.app_name);
+        radioGroup = (RadioGroup)findViewById(R.id.radioGroup);
 
         editText.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -36,11 +40,21 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.yesRadioButton)
+                    selectedRadio = "yes";
+                else if (checkedId == R.id.noRadioButton)
+                    selectedRadio = "no";
+            }
+        });
     }
 
     public void submit(View view) {
         if (!submitted) {
-            textView.setText("You submitted: " + editText.getText());
+            textView.setText("You submitted: " + editText.getText() + " " + selectedRadio);
             editText.setText("");
             button.setText(R.string.button_unsubmit);
             submitted = true;
