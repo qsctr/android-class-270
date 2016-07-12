@@ -19,12 +19,12 @@
         android:layout_marginTop="16dp" />
 
     <Button
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="submit"
         android:id="@+id/button"
         android:onClick="submit"
-        android:layout_below="@+id/editText"
+        android:layout_below="@+id/radioGroup"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="16dp" />
@@ -35,8 +35,34 @@
         android:text="This is a TextView"
         android:id="@+id/textView"
         android:textSize="24dp"
-        android:layout_below="@+id/button"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        android:layout_below="@+id/button" />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:orientation="horizontal"
+        android:id="@+id/radioGroup"
+        android:layout_marginTop="16dp">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Yes"
+            android:id="@+id/radioButton"
+            android:checked="false" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No"
+            android:id="@+id/radioButton2"
+            android:layout_marginLeft="8dp"
+            android:checked="false" />
+    </RadioGroup>
 </RelativeLayout>
