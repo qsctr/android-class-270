@@ -15,8 +15,7 @@ public class MainActivity extends AppCompatActivity {
     Button button;
     EditText editText;
     RadioGroup radioGroup;
-    String selectedRadio = "yes";
-    boolean submitted;
+    String selectedRadio = "male";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,24 +43,16 @@ public class MainActivity extends AppCompatActivity {
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (checkedId == R.id.yesRadioButton)
-                    selectedRadio = "yes";
-                else if (checkedId == R.id.noRadioButton)
-                    selectedRadio = "no";
+                if (checkedId == R.id.maleRadioButton)
+                    selectedRadio = "male";
+                else if (checkedId == R.id.femaleRadioButton)
+                    selectedRadio = "female";
             }
         });
     }
 
     public void submit(View view) {
-        if (!submitted) {
-            textView.setText("You submitted: " + editText.getText() + " " + selectedRadio);
-            editText.setText("");
-            button.setText(R.string.button_unsubmit);
-            submitted = true;
-        } else {
-            textView.setText(R.string.app_name);
-            button.setText(R.string.button_submit);
-            submitted = false;
-        }
+        textView.setText("You submitted: " + editText.getText() + " " + selectedRadio);
+        editText.setText("");
     }
 }
