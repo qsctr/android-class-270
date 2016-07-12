@@ -19,16 +19,17 @@ public class MainActivity extends AppCompatActivity {
 
         textView = (TextView)findViewById(R.id.textView);
         button = (Button)findViewById(R.id.button);
+        textView.setText(R.string.app_name);
     }
 
     public void submit(View view) {
         if (!submitted) {
-            textView.setText("Submitted");
-            button.setText("unsubmit");
+            textView.setText(R.string.submitted_message);
+            button.setText(R.string.button_unsubmit);
             submitted = true;
         } else {
-            textView.setText("This is a TextView");
-            button.setText("submit");
+            textView.setText(R.string.app_name);
+            button.setText(R.string.button_submit);
             submitted = false;
         }
     }
