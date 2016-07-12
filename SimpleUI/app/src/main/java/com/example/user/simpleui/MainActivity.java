@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void submit(View view) {
         if (!submitted) {
-            textView.setText(editText.getText());
+            textView.setText("You submitted: " + editText.getText());
             button.setText(R.string.button_unsubmit);
             submitted = true;
         } else {
