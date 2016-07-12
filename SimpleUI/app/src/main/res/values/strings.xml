@@ -2,5 +2,4 @@
     <string name="app_name">SimpleUI</string>
     <string name="button_submit">Submit</string>
     <string name="button_unsubmit">Unsubmit</string>
-    <string name="submitted_message">Submitted</string>
 </resources>

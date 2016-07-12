@@ -4,12 +4,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
     TextView textView;
     Button button;
+    EditText editText;
     boolean submitted;
 
     @Override
@@ -19,12 +21,13 @@ public class MainActivity extends AppCompatActivity {
 
         textView = (TextView)findViewById(R.id.textView);
         button = (Button)findViewById(R.id.button);
+        editText = (EditText)findViewById(R.id.editText);
         textView.setText(R.string.app_name);
     }
 
     public void submit(View view) {
         if (!submitted) {
-            textView.setText(R.string.submitted_message);
+            textView.setText(editText.getText());
             button.setText(R.string.button_unsubmit);
             submitted = true;
         } else {
