@@ -13,6 +13,9 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     TextView textView;
@@ -23,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     Spinner spinner;
 
     String selectedTea = "Black tea";
+
+    List<Order> orders = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,15 +61,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
-                new String[]{"black tea", "green tea", "1", "2", "3", "4", "5"}));
+        setupListView();
 
         spinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
                 getResources().getStringArray(R.array.storeInfo)));
     }
 
+    public void setupListView() {
+        listView.setAdapter(new OrderAdapter(this, orders));
+    }
+
     public void submit(View view) {
-        textView.setText("You submitted " + selectedTea);
+        String text = editText.getText().toString();
+
+        textView.setText(text);
+
+        Order order = new Order();
+        order.note = text;
+        order.drinkName = selectedTea;
+        order.storeInfo = (String) spinner.getSelectedItem();
+        orders.add(order);
+
+        setupListView();
+
         editText.setText("");
     }
 
