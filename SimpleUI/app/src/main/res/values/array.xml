@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="storeInfo">
+        <item>Taipei store</item>
+        <item>Taichung store</item>
+        <item>Tainan store</item>
+        <item>Taitung store</item>
+    </string-array>
+</resources>
