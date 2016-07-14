@@ -14,11 +14,14 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    static final int REQUEST_CODE_DRINK_MENU_ACTIVITY = 0;
 
     TextView textView;
     Button button;
@@ -94,7 +97,16 @@ public class MainActivity extends AppCompatActivity {
     public void goToMenu(View view) {
         Intent intent = new Intent();
         intent.setClass(this, DrinkMenuActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_DRINK_MENU_ACTIVITY);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_DRINK_MENU_ACTIVITY && resultCode == RESULT_OK) {
+            Toast.makeText(this, "Order sent", Toast.LENGTH_SHORT).show();
+            textView.setText(data.getStringExtra("results"));
+        }
     }
 
     @Override

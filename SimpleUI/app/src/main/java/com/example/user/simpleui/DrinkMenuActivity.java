@@ -1,5 +1,6 @@
 package com.example.user.simpleui;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,6 +8,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +68,16 @@ public class DrinkMenuActivity extends AppCompatActivity {
         for (Drink drink : orders)
             total += drink.mPrice;
         totalTextView.setText(String.valueOf(total));
+    }
+
+    public void done(View view) {
+        Intent intent = new Intent();
+        JSONArray jsonArray = new JSONArray();
+        for (Drink drink : orders)
+            jsonArray.put(drink.getJSON());
+        intent.putExtra("results", jsonArray.toString());
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     @Override
