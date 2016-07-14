@@ -3,6 +3,8 @@ package com.example.user.simpleui;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -20,6 +22,7 @@ public class DrinkMenuActivity extends AppCompatActivity {
     int[] imageId = {R.drawable.drink1, R.drawable.drink2, R.drawable.drink3, R.drawable.drink4};
 
     List<Drink> drinks = new ArrayList<>();
+    List<Drink> orders = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,21 @@ public class DrinkMenuActivity extends AppCompatActivity {
 
     private void setupDrinkMenuListView() {
         drinkMenuListView.setAdapter(new DrinkAdapter(this, drinks));
+
+        drinkMenuListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                orders.add((Drink) parent.getAdapter().getItem(position));
+                updateTotal();
+            }
+        });
+    }
+
+    public void updateTotal() {
+        int total = 0;
+        for (Drink drink : orders)
+            total += drink.mPrice;
+        totalTextView.setText(String.valueOf(total));
     }
 
     @Override
