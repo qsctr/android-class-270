@@ -26,9 +26,7 @@ public class DrinkOrderDialog extends DialogFragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+
 
     private OnDrinkOrderListener mListener;
 
@@ -40,16 +38,13 @@ public class DrinkOrderDialog extends DialogFragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment DrinkOrderDialog.
      */
     // TODO: Rename and change types and number of parameters
-    public static DrinkOrderDialog newInstance(String param1, String param2) {
+    public static DrinkOrderDialog newInstance(DrinkOrder drinkOrder) {
         DrinkOrderDialog fragment = new DrinkOrderDialog();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_PARAM1, drinkOrder.toData());
         fragment.setArguments(args);
         return fragment;
     }
@@ -73,8 +68,16 @@ public class DrinkOrderDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        if (getArguments() != null) {
+            DrinkOrder drinkOrder =
+                    DrinkOrder.newInstanceWithData(getArguments().getString(ARG_PARAM1));
+            if (drinkOrder == null)
+                throw new RuntimeException("Drink order instantiation failed");
+        }
         return new AlertDialog.Builder(getActivity())
-                .setView(getActivity().getLayoutInflater().inflate(R.layout.fragment_drink_order_dialog, null))
+                .setView(getActivity()
+                        .getLayoutInflater()
+                        .inflate(R.layout.fragment_drink_order_dialog, null))
                 .setTitle("Hello Dialog")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
@@ -119,6 +122,6 @@ public class DrinkOrderDialog extends DialogFragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnDrinkOrderListener {
-        void onDrinkOrderFinished();
+        void onDrinkOrderFinished(DrinkOrder drinkOrder);
     }
 }

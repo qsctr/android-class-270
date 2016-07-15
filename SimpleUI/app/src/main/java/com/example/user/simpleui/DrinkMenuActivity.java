@@ -28,7 +28,7 @@ public class DrinkMenuActivity extends AppCompatActivity implements DrinkOrderDi
     int[] imageId = {R.drawable.drink1, R.drawable.drink2, R.drawable.drink3, R.drawable.drink4};
 
     List<Drink> drinks = new ArrayList<>();
-    List<Drink> orders = new ArrayList<>();
+    List<DrinkOrder> orders = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,21 +72,22 @@ public class DrinkMenuActivity extends AppCompatActivity implements DrinkOrderDi
         if (prev != null)
             fragmentTransaction.remove(prev);
         fragmentTransaction.addToBackStack(null);
-        DrinkOrderDialog.newInstance("", "").show(fragmentTransaction, "DrinkOrderDialog");
+        DrinkOrderDialog.newInstance(new DrinkOrder(drink)).show(fragmentTransaction, "DrinkOrderDialog");
     }
 
     public void updateTotal() {
         int total = 0;
-        for (Drink drink : orders)
-            total += drink.mPrice;
+        for (DrinkOrder drinkOrder : orders)
+            total += drinkOrder.mNumber * drinkOrder.drink.mPrice
+                    + drinkOrder.lNumber * drinkOrder.drink.lPrice;
         totalTextView.setText(String.valueOf(total));
     }
 
     public void done(View view) {
         Intent intent = new Intent();
         JSONArray jsonArray = new JSONArray();
-        for (Drink drink : orders)
-            jsonArray.put(drink.getJSON());
+        for (DrinkOrder drinkOrder : orders)
+            jsonArray.put(drinkOrder.toData());
         intent.putExtra("results", jsonArray.toString());
         setResult(RESULT_OK, intent);
         finish();
@@ -129,7 +130,16 @@ public class DrinkMenuActivity extends AppCompatActivity implements DrinkOrderDi
     }
 
     @Override
-    public void onDrinkOrderFinished() {
-
+    public void onDrinkOrderFinished(DrinkOrder drinkOrder) {
+        boolean flag = false;
+        for (int i = 0; i < orders.size(); i++) {
+            if (orders.get(i).drink.name.equals(drinkOrder.drink.name)) {
+                orders.set(i, drinkOrder);
+                flag = true;
+                break;
+            }
+        }
+        if (!flag)
+            orders.add(drinkOrder);
     }
 }
