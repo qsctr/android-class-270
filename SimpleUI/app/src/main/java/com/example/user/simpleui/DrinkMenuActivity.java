@@ -1,5 +1,8 @@
 package com.example.user.simpleui;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,7 +17,7 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DrinkMenuActivity extends AppCompatActivity {
+public class DrinkMenuActivity extends AppCompatActivity implements DrinkOrderDialog.OnDrinkOrderListener {
 
     TextView totalTextView;
     ListView drinkMenuListView;
@@ -57,10 +60,19 @@ public class DrinkMenuActivity extends AppCompatActivity {
         drinkMenuListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                orders.add((Drink) parent.getAdapter().getItem(position));
-                updateTotal();
+                showDrinkOrderDialog((Drink) parent.getAdapter().getItem(position));
             }
         });
+    }
+
+    public void showDrinkOrderDialog(Drink drink) {
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Fragment prev = getFragmentManager().findFragmentByTag("DrinkOrderDialog");
+        if (prev != null)
+            fragmentTransaction.remove(prev);
+        fragmentTransaction.addToBackStack(null);
+        DrinkOrderDialog.newInstance("", "").show(fragmentTransaction, "DrinkOrderDialog");
     }
 
     public void updateTotal() {
@@ -114,5 +126,10 @@ public class DrinkMenuActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         Log.d("Debug", "DrinkMenuActivity onRestart");
+    }
+
+    @Override
+    public void onDrinkOrderFinished() {
+
     }
 }
