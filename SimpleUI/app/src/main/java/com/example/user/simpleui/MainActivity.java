@@ -78,6 +78,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        for (String data : Utils.readFile(this, "history").split("\n")) {
+            Order order = Order.newInstanceWithData(data);
+            if (order != null)
+                orders.add(order);
+        }
+
         setupListView();
 
         spinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
@@ -99,7 +105,10 @@ public class MainActivity extends AppCompatActivity {
         order.note = text;
         order.menuResults = menuResults;
         order.storeInfo = (String) spinner.getSelectedItem();
+
         orders.add(order);
+
+        Utils.writeFile(this, "history", order.toData() + "\n");
 
         setupListView();
 
