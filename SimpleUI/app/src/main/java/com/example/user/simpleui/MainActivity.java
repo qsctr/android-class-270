@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -88,6 +89,20 @@ public class MainActivity extends AppCompatActivity {
 
         spinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
                 getResources().getStringArray(R.array.storeInfo)));
+
+        spinner.setSelection(sharedPreferences.getInt("spinner", 0));
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                editor.putInt("spinner", spinner.getSelectedItemPosition());
+                editor.commit();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         Log.d("Debug", "MainActivity onCreate");
     }
