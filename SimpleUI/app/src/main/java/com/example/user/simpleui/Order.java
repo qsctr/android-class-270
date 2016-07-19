@@ -2,12 +2,15 @@ package com.example.user.simpleui;
 
 import com.parse.FindCallback;
 import com.parse.ParseClassName;
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 @ParseClassName("Order")
 public class Order extends ParseObject {
@@ -83,8 +86,20 @@ public class Order extends ParseObject {
         return null;
     }
 
-    public static void getOrdersFromRemote(FindCallback<Order> callback) {
-        ParseQuery.getQuery(Order.class).findInBackground(callback);
+    public static void getOrdersFromRemote(final FindCallback<Order> callback) {
+        getQuery().findInBackground(new FindCallback<Order>() {
+            @Override
+            public void done(List<Order> objects, ParseException e) {
+                if (e == null) {
+                    Order.pinAllInBackground("Order", objects);
+                }
+                callback.done(objects, e);
+            }
+        });
+    }
+
+    public static ParseQuery getQuery() {
+        return ParseQuery.getQuery(Order.class);
     }
 
 }

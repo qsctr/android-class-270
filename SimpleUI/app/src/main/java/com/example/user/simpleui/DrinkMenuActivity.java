@@ -46,9 +46,9 @@ public class DrinkMenuActivity extends AppCompatActivity implements DrinkOrderDi
     private void setData() {
         for (int i = 0; i < names.length; i++) {
             Drink drink = new Drink();
-            drink.name = names[i];
-            drink.mPrice = mPrices[i];
-            drink.lPrice = lPrices[i];
+            drink.setName(names[i]);
+            drink.setmPrice(mPrices[i]);
+            drink.setlPrice(lPrices[i]);
             drink.imageId = imageId[i];
             drinks.add(drink);
         }
@@ -68,7 +68,7 @@ public class DrinkMenuActivity extends AppCompatActivity implements DrinkOrderDi
     public void showDrinkOrderDialog(Drink drink) {
         DrinkOrder drinkOrder = new DrinkOrder(drink);
         for (DrinkOrder order : orders) {
-            if (order.drink.name.equals(drink.name)) {
+            if (order.drink.getName().equals(drink.getName())) {
                 drinkOrder = order;
                 break;
             }
@@ -85,8 +85,8 @@ public class DrinkMenuActivity extends AppCompatActivity implements DrinkOrderDi
     public void updateTotal() {
         int total = 0;
         for (DrinkOrder drinkOrder : orders)
-            total += drinkOrder.mNumber * drinkOrder.drink.mPrice
-                    + drinkOrder.lNumber * drinkOrder.drink.lPrice;
+            total += drinkOrder.mNumber * drinkOrder.drink.getmPrice()
+                    + drinkOrder.lNumber * drinkOrder.drink.getlPrice();
         totalTextView.setText(String.valueOf(total));
     }
 
@@ -140,7 +140,7 @@ public class DrinkMenuActivity extends AppCompatActivity implements DrinkOrderDi
     public void onDrinkOrderFinished(DrinkOrder drinkOrder) {
         boolean flag = false;
         for (int i = 0; i < orders.size(); i++) {
-            if (orders.get(i).drink.name.equals(drinkOrder.drink.name)) {
+            if (orders.get(i).drink.getName().equals(drinkOrder.drink.getName())) {
                 orders.set(i, drinkOrder);
                 flag = true;
                 break;
