@@ -19,11 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,11 +82,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        for (String data : Utils.readFile(this, "history").split("\n")) {
-            Order order = Order.newInstanceWithData(data);
-            if (order != null)
-                orders.add(order);
-        }
+//        for (String data : Utils.readFile(this, "history").split("\n")) {
+//            Order order = Order.newInstanceWithData(data);
+//            if (order != null)
+//                orders.add(order);
+//        }
 
         setupListView();
 
@@ -111,35 +107,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ParseObject parseObject = new ParseObject("Test");
-        parseObject.put("foo", "bar");
-        parseObject.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                Toast.makeText(MainActivity.this,
-                        e == null ? "Upload successful" : "Upload failed",
-                        Toast.LENGTH_LONG).show();
-            }
-        });
-
-        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Test");
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-                if (e == null) {
-                    for (ParseObject object : objects) {
-                        Toast.makeText(MainActivity.this,
-                                object.getString("foo"), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        });
-
         Log.d("Debug", "MainActivity onCreate");
     }
 
     public void setupListView() {
-        listView.setAdapter(new OrderAdapter(this, orders));
+        Order.getOrdersFromRemote(new FindCallback<Order>() {
+            @Override
+            public void done(List<Order> objects, ParseException e) {
+                orders = objects;
+                listView.setAdapter(new OrderAdapter(MainActivity.this, orders));
+            }
+        });
     }
 
     public void submit(View view) {
@@ -148,9 +126,10 @@ public class MainActivity extends AppCompatActivity {
         textView.setText(text);
 
         Order order = new Order();
-        order.note = text;
-        order.menuResults = menuResults;
-        order.storeInfo = (String) spinner.getSelectedItem();
+        order.setNote(text);
+        order.setMenuResults(menuResults);
+        order.setStoreInfo((String) spinner.getSelectedItem());
+        order.saveInBackground();
 
         orders.add(order);
 
