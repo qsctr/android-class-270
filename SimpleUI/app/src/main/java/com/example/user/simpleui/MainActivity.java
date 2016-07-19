@@ -18,8 +18,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
 import java.util.ArrayList;
@@ -114,8 +117,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void done(ParseException e) {
                 Toast.makeText(MainActivity.this,
-                        e == null ? "Successfully uploaded" : "Upload failed",
+                        e == null ? "Upload successful" : "Upload failed",
                         Toast.LENGTH_LONG).show();
+            }
+        });
+
+        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Test");
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (e == null) {
+                    for (ParseObject object : objects) {
+                        Toast.makeText(MainActivity.this,
+                                object.getString("foo"), Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
 
