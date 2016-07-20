@@ -23,9 +23,12 @@ import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -102,20 +105,39 @@ public class MainActivity extends AppCompatActivity {
 
         setupListView();
 
-        spinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
-                getResources().getStringArray(R.array.storeInfo)));
-
-        spinner.setSelection(sharedPreferences.getInt("spinner", 0));
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        ParseQuery<ParseObject> storeInfoQuery = ParseQuery.getQuery("StoreInfo");
+        storeInfoQuery.findInBackground(new FindCallback<ParseObject>() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                editor.putInt("spinner", spinner.getSelectedItemPosition());
-                editor.commit();
-            }
+            public void done(List<ParseObject> objects, ParseException e) {
+                Log.d("Debug", "Finished finding in background");
+                if (e == null) {
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+                    String[] storeInfoArray = new String[objects.size()];
 
+                    for (int i = 0; i < objects.size(); i++) {
+                        storeInfoArray[i] = objects.get(i).getString("name")
+                                + ", " + objects.get(i).getString("address");
+                    }
+
+                    Log.d("Debug", Arrays.toString(storeInfoArray));
+
+                    spinner.setAdapter(new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1,
+                            storeInfoArray));
+
+                    // spinner.setSelection(sharedPreferences.getInt("spinner", 0));
+                    spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            editor.putInt("spinner", spinner.getSelectedItemPosition());
+                            editor.commit();
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+                }
             }
         });
 
