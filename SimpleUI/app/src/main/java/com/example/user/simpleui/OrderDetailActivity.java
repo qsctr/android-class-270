@@ -1,6 +1,8 @@
 package com.example.user.simpleui;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -34,5 +36,21 @@ public class OrderDetailActivity extends AppCompatActivity {
             }
         }
         menuResultsTextView.setText(text);
+    }
+
+    public static class GeoCodingTask extends AsyncTask<String, Void, Bitmap> {
+
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            String address = params[0];
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+
+        }
     }
 }

@@ -2,9 +2,19 @@ package com.example.user.simpleui;
 
 import android.content.Context;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 
 public class Utils {
 
@@ -29,6 +39,55 @@ public class Utils {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public static byte[] urlToBytes(String urlString) {
+        try {
+            URL url = new URL(urlString);
+            URLConnection connection = url.openConnection();
+            InputStream inputStream = connection.getInputStream();
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            byte[] bytes = new byte[1024];
+            int len;
+            while ((len = inputStream.read(bytes)) != -1) {
+                byteArrayOutputStream.write(bytes, 0, len);
+            }
+            return byteArrayOutputStream.toByteArray();
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static double[] getLatLngFromGoogleMapsAPI(String address) {
+        try {
+            address = URLEncoder.encode(address, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        String apiURL = "http://maps.google.com/maps/api/geocode/json?address=" + address;
+
+        byte[] data = urlToBytes(apiURL);
+
+        if (data == null)
+            return null;
+
+        String result = new String(data);
+        try {
+            JSONObject jsonObject = new JSONObject(result);
+            if (jsonObject.getString("status").equals("OK")) {
+                JSONObject latLng = jsonObject
+                        .getJSONArray("results")
+                        .getJSONObject(0)
+                        .getJSONObject("geometry")
+                        .getJSONObject("location");
+                return new double[] {latLng.getDouble("lat"), latLng.getDouble("lng")};
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }
