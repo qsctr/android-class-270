@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -147,13 +148,16 @@ public class MainActivity extends AppCompatActivity {
         order.setStoreInfo((String) spinner.getSelectedItem());
 
         order.pinInBackground("Order");
-        order.saveEventually();
+        order.saveEventually(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                setupListView();
+            }
+        });
 
         orders.add(order);
 
         Utils.writeFile(this, "history", order.toData() + "\n");
-
-        setupListView();
 
         editText.setText("");
         menuResults = "";
