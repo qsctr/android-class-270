@@ -92,6 +92,14 @@ public class MainActivity extends AppCompatActivity {
 //                orders.add(order);
 //        }
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Order order = (Order) parent.getAdapter().getItem(position);
+                goToDetail(order);
+            }
+        });
+
         setupListView();
 
         spinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
@@ -115,7 +123,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setupListView() {
-
         FindCallback<Order> callback = new FindCallback<Order>() {
             @Override
             public void done(List<Order> objects, ParseException e) {
@@ -167,6 +174,15 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setClass(this, DrinkMenuActivity.class);
         startActivityForResult(intent, REQUEST_CODE_DRINK_MENU_ACTIVITY);
+    }
+
+    public void goToDetail(Order order) {
+        Intent intent = new Intent();
+        intent.setClass(this, OrderDetailActivity.class);
+        intent.putExtra("note", order.getNote());
+        intent.putExtra("storeInfo", order.getStoreInfo());
+        intent.putExtra("menuResults", order.getMenuResults());
+        startActivity(intent);
     }
 
     @Override

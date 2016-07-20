@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @ParseClassName("Order")
@@ -58,6 +59,29 @@ public class Order extends ParseObject {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public static List<String> getMenuResultList(String menuResults) {
+        if (menuResults == null || menuResults == "") {
+            return null;
+        }
+
+        try {
+            JSONArray jsonArray = new JSONArray(menuResults);
+            List<String> menuResultList = new ArrayList<>();
+            for (int i = 0; i < jsonArray.length(); i++) {
+                String data = jsonArray.getString(i);
+                DrinkOrder drinkOrder = DrinkOrder.newInstanceWithData(data);
+                String menuResult = drinkOrder.drink.getName()
+                        + "Medium: " + String.valueOf(drinkOrder.mNumber)
+                        + "Large: " + String.valueOf(drinkOrder.lNumber);
+                menuResultList.add(menuResult);
+            }
+            return menuResultList;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public String toData() {
