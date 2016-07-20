@@ -1,10 +1,16 @@
 package com.example.user.simpleui;
 
+import com.parse.FindCallback;
 import com.parse.ParseClassName;
+import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 @ParseClassName("Drink")
 public class Drink extends ParseObject {
@@ -34,6 +40,10 @@ public class Drink extends ParseObject {
         put("lPrice", lPrice);
     }
 
+    public ParseFile getImage() {
+        return getParseFile("image");
+    }
+
     public JSONObject getJSON() {
         JSONObject jsonObject = new JSONObject();
         try {
@@ -57,6 +67,21 @@ public class Drink extends ParseObject {
             e.printStackTrace();
         }
         return drink;
+    }
+
+    public static ParseQuery<Drink> getQuery() {
+        return ParseQuery.getQuery(Drink.class);
+    }
+
+    public static void syncDrinksFromRemote(final FindCallback<Drink> callback) {
+        Drink.getQuery().findInBackground(new FindCallback<Drink>() {
+            @Override
+            public void done(List<Drink> objects, ParseException e) {
+                if (e == null) {
+                    callback.done(objects, null);
+                }
+            }
+        });
     }
 
 }
