@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                     spinner.setAdapter(new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1,
                             storeInfoArray));
 
-                    // spinner.setSelection(sharedPreferences.getInt("spinner", 0));
+                    spinner.setSelection(sharedPreferences.getInt("spinner", 0));
                     spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -148,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
         FindCallback<Order> callback = new FindCallback<Order>() {
             @Override
             public void done(List<Order> objects, ParseException e) {
+                Log.d("Debug", "Finished getting list view");
                 if (e == null) {
                     orders = objects;
                     listView.setAdapter(new OrderAdapter(MainActivity.this, orders));
@@ -160,8 +161,10 @@ public class MainActivity extends AppCompatActivity {
                         .getActiveNetworkInfo();
 
         if (networkInfo == null || !networkInfo.isConnected()) {
+            Log.d("Debug", "Not connected to internet");
             Order.getQuery().fromLocalDatastore().findInBackground(callback);
         } else {
+            Log.d("Debug", "Connected to internet");
             Order.getOrdersFromRemote(callback);
         }
     }
