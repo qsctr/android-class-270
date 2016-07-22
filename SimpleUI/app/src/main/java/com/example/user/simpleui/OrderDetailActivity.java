@@ -5,6 +5,8 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -15,6 +17,11 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.directions.route.AbstractRouting;
+import com.directions.route.Route;
+import com.directions.route.RouteException;
+import com.directions.route.Routing;
+import com.directions.route.RoutingListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -28,8 +35,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderDetailActivity
@@ -37,7 +47,8 @@ public class OrderDetailActivity
         implements GeoCodingTask.GeoCodingResponse,
             GoogleApiClient.ConnectionCallbacks,
             GoogleApiClient.OnConnectionFailedListener,
-            LocationListener {
+            LocationListener,
+            RoutingListener {
 
     final static int ACCESS_FINE_LOCATION_REQUEST_CODE = 1;
 
@@ -45,6 +56,10 @@ public class OrderDetailActivity
     GoogleMap googleMap;
     GoogleApiClient googleApiClient;
     LocationRequest locationRequest;
+
+    LatLng storeLocation;
+
+    List<Polyline> polylines = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +116,8 @@ public class OrderDetailActivity
 //                }
 //            });
 
+            storeLocation = latlng;
+
             createGoogleApiClient();
         }
     }
@@ -141,7 +158,12 @@ public class OrderDetailActivity
             start = new LatLng(location.getLatitude(), location.getLongitude());
         }
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(start, 6));
-        Log.d("Debug", "Location found");
+        Routing routing = new Routing.Builder()
+                .travelMode(AbstractRouting.TravelMode.TRANSIT)
+                .waypoints(start, storeLocation)
+                .withListener(this)
+                .build();
+        routing.execute();
     }
 
     @Override
@@ -194,6 +216,43 @@ public class OrderDetailActivity
         if (googleApiClient != null) {
             googleApiClient.disconnect();
         }
+    }
+
+    @Override
+    public void onRoutingFailure(RouteException e) {
+
+    }
+
+    @Override
+    public void onRoutingStart() {
+
+    }
+
+    @Override
+    public void onRoutingSuccess(ArrayList<Route> routes, int i) {
+        if (polylines.size() > 0)
+        {
+            for (Polyline polyline : polylines) {
+                polyline.remove();
+            }
+            polylines.clear();
+        }
+
+        for (Route route : routes) {
+            polylines.add(
+                    googleMap.addPolyline(
+                            new PolylineOptions()
+                                    .addAll(route.getPoints())
+                                    .color(Color.GREEN)
+                                    .width(10)
+                    )
+            );
+        }
+    }
+
+    @Override
+    public void onRoutingCancelled() {
+
     }
 
     //    public static class GeoCodingTask extends AsyncTask<String, Void, Bitmap> {
