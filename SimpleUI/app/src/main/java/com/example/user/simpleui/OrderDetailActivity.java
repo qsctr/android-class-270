@@ -200,6 +200,35 @@ public class OrderDetailActivity
     public void onLocationChanged(Location location) {
         LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 6));
+
+        int index = -1;
+        if (polylines.size() > 0) {
+            for (Polyline polyline : polylines) {
+                List<LatLng> points = polyline.getPoints();
+                for (int i = 0; i < points.size(); i++) {
+                    if (i != points.size() -1) {
+                        LatLng p1 = points.get(i);
+                        LatLng p2 = points.get(i + 1);
+
+                        if (currentLatLng.latitude >= Math.min(p1.latitude, p2.latitude)
+                                && currentLatLng.latitude <= Math.max(p1.latitude, p2.latitude)
+                                && currentLatLng.longitude >= Math.min(p1.longitude, p2.longitude)
+                                && currentLatLng.longitude <= Math.max(p1.longitude, p2.longitude)) {
+                            index = i;
+                            break;
+                        }
+                    }
+                }
+
+                if (index != -1) {
+                    for (int i = index - 1; i >= 0; i--) {
+                        points.remove(0);
+                    }
+                    points.set(0, currentLatLng);
+                    polyline.setPoints(points);
+                }
+            }
+        }
     }
 
     @Override
